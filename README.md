@@ -15,6 +15,6 @@ The path also consists of connected points, named below as an example.
 
 The curve matrix is defined as the matrix where each point on the curve is a column.
 
-<img src ="images/ExtrudePath4.jpg" width = "200">
+<img src ="images/ExtrudePath8.jpg" width = "200">
 
-The initial normal vector for the curve is determined by finding the normal vector of the plane that best fits all the points on the curve. This is accomplished by first finding the eigenvalues and eigenvectors of the matrix <img src ="images/ExtrudePath5.jpg" width = "50">.
+The initial normal vector for the curve is determined by finding the normal vector of the plane that best fits all the points on the curve. This is accomplished by first finding the eigenvalues and eigenvectors of the matrix <img src ="images/ExtrudePath9.jpg" width = "50">.
