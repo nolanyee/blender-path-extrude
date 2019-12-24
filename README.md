@@ -61,6 +61,6 @@ The angle of the corner is calculated as
 
 And the scaling factor, (corner width relative to the edge width), is
 
-<img src ="images/ExtrudePath17.jpg" width = "300">
+<img src ="images/ExtrudePath17.jpg" width = "200">
 
 
