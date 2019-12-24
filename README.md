@@ -43,7 +43,7 @@ The rotation angle is calculated as
 
 The rotation axis is defined as
 
-<img src ="images/ExtrudePath15.jpg" width = "175">
+<img src ="images/ExtrudePath15.jpg" width = "150">
 
 Which is the vector perpendicular to the initial and final normal vectors.
 
@@ -51,4 +51,8 @@ Which is the vector perpendicular to the initial and final normal vectors.
 
 
 #### Scaling
+In addition to translation and rotation, scaling is performed during the extrusion process to prevent pinching of the resulting surface at sharp corners. The result is mitered corners.
+
+<img src ="images/ExtrudePath7.jpg" width = "500">
+
 
