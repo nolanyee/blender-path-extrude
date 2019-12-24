@@ -6,6 +6,7 @@ To use this tool, select one polygon curve and another polygon path. The selecte
 
 ### Technical Details
 The curve (the first polygon to be selected) consists of connected points. The points and pivots are named as shown below, as an example.
-<img src ="images/ExtrudePath2.jpg" width = "500">
+<img src ="images/ExtrudePath2.jpg" width = "500" align="left">
+
 The path also consists of connected points, named below as an example.
-<img src ="images/ExtrudePath3.jpg" width = "500">
+<img src ="images/ExtrudePath3.jpg" width = "400" align="left">
