@@ -19,15 +19,24 @@ The curve matrix is defined as the matrix where each point on the curve is a col
 <img src ="images/ExtrudePath8.jpg" width = "200">
 
 #### Translation
-The translation vectors define how the curve is translated along the path. First the pivot point is translated to the location of the first point in the curve. Thus the first translation vector is <img src ="images/ExtrudePath10.jpg" width = "80">. For all subsequent translations, the vector is simply the difference between the next point on the path and the point immediately before it <img src ="images/ExtrudePath11.jpg" width = "60">.
+The translation vectors define how the curve is translated along the path. First the pivot point is translated to the location of the first point in the curve. Thus the first translation vector is <img src ="images/ExtrudePath10.jpg" width = "80">. For all subsequent translations, the vector is simply the difference between the next point on the path and the point immediately before it <img src ="images/ExtrudePath11.jpg" width = "65">.
 
 #### Rotation
 
-The initial normal vector for the curve is determined by finding the normal vector of the plane that best fits all the points on the curve. This is accomplished by first finding the eigenvalues and eigenvectors of the matrix <img src ="images/ExtrudePath9.jpg" width = "35">.
+First, the initial normal vector for the curve is determined by finding the normal vector of the plane that best fits all the points on the curve. This is accomplished by first finding the eigenvalues and eigenvectors of the matrix <img src ="images/ExtrudePath9.jpg" width = "35">.
 
 <img src ="images/ExtrudePath4.jpg" width = "400">
 
-The eigenvectors are shown in green in the image above. The eigenvector corresponding to the eigenvalue with the smallest absolute value is the normal vector <img src ="images/ExtrudePath12.jpg" width = "25">.
+The eigenvectors are shown in green in the image above. The eigenvector corresponding to the eigenvalue with the smallest absolute value is the normal vector <img src ="images/ExtrudePath12.jpg" width = "20">.
+
+All subsequent normal vectors are calculated as follows
+
+<img src ="images/ExtrudePath14.jpg" width = "200>
+
+This corresponds to the normalized average of the normalized directions of lines that connect to the vertex of interest.
+
+<img src ="images/ExtrudePath5.jpg" width = "400">
+
 
 #### Scaling
 
