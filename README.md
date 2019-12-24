@@ -31,7 +31,7 @@ The eigenvectors are shown in green in the image above. The eigenvector correspo
 
 All subsequent normal vectors are calculated as follows
 
-<img src ="images/ExtrudePath14.jpg" width = "200>
+<img src ="images/ExtrudePath14.jpg" width = "200">
 
 This corresponds to the normalized average of the normalized directions of lines that connect to the vertex of interest.
 
