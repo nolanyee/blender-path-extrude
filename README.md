@@ -63,4 +63,4 @@ And the scaling factor, (corner width relative to the edge width), is
 
 <img src ="images/ExtrudePath17.jpg" width = "200">
 
-
+For each step in the extrusion process, the scaling applied is the ratio of the scaling factor at the point of interest, over the scaling factor at the previous point.
