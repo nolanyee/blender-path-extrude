@@ -55,4 +55,12 @@ In addition to translation and rotation, scaling is performed during the extrusi
 
 <img src ="images/ExtrudePath7.jpg" width = "500">
 
+The angle of the corner is calculated as
+
+<img src ="images/ExtrudePath16.jpg" width = "350">
+
+And the scaling factor, (corner width relative to the edge width), is
+
+<img src ="images/ExtrudePath17.jpg" width = "300">
+
 
