@@ -19,7 +19,7 @@ The curve matrix is defined as the matrix where each point on the curve is a col
 <img src ="images/ExtrudePath8.jpg" width = "200">
 
 #### Translation
-The translation vectors define how the curve is translated along the path. First the pivot point is translated to the location of the first point in the curve. Thus the first translation vector is <img src ="images/ExtrudePath10.jpg" width = "75">. For all subsequent translations, the vector is simply the difference between the next point on the path and the point immediately before it <img src ="images/ExtrudePath11.jpg" width = "75">.
+The translation vectors define how the curve is translated along the path. First the pivot point is translated to the location of the first point in the curve. Thus the first translation vector is <img src ="images/ExtrudePath10.jpg" width = "80">. For all subsequent translations, the vector is simply the difference between the next point on the path and the point immediately before it <img src ="images/ExtrudePath11.jpg" width = "60">.
 
 #### Rotation
 
