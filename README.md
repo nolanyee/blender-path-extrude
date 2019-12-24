@@ -19,4 +19,8 @@ The curve matrix is defined as the matrix where each point on the curve is a col
 
 The initial normal vector for the curve is determined by finding the normal vector of the plane that best fits all the points on the curve. This is accomplished by first finding the eigenvalues and eigenvectors of the matrix <img src ="images/ExtrudePath9.jpg" width = "35">.
 
-<img src ="images/ExtrudePath4.jpg" width = "200">
+<img src ="images/ExtrudePath4.jpg" width = "400">
+
+The eigenvectors are shown in green in the image above. The eigenvector corresponding to the eigenvalue with the smallest absolute value is the normal vector.
+
+
