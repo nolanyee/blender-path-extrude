@@ -27,7 +27,7 @@ The initial normal vector for the curve is determined by finding the normal vect
 
 <img src ="images/ExtrudePath4.jpg" width = "400">
 
-The eigenvectors are shown in green in the image above. The eigenvector corresponding to the eigenvalue with the smallest absolute value is the normal vector.
+The eigenvectors are shown in green in the image above. The eigenvector corresponding to the eigenvalue with the smallest absolute value is the normal vector <img src ="images/ExtrudePath12.jpg" width = "10">.
 
 #### Scaling
 
