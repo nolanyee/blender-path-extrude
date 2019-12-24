@@ -37,6 +37,17 @@ This corresponds to the average of the normalized directions of lines that conne
 
 <img src ="images/ExtrudePath5.jpg" width = "350">
 
+The rotation angle is calculated as
+
+<img src ="images/ExtrudePath18.jpg" width = "200">
+
+The rotation axis is defined as
+
+<img src ="images/ExtrudePath15.jpg" width = "175">
+
+Which is the vector perpendicular to the initial and final normal vectors.
+
+<img src ="images/ExtrudePath6.jpg" width = "350">
 
 
 #### Scaling
