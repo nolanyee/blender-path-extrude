@@ -67,5 +67,5 @@ For each step in the extrusion process, the scaling applied is the ratio of the 
 
 ### Updates from Previous Version
 1. Added support for closed extrusion paths
-2. Changed behavior to scale the first edge loop to preserve the scale of the normal cross section.
+2. Changed behavior to scale the first edge loop to preserve the scale of the normal cross section, and inverting the sign if necessary to prevent flipping of the extruded curve.
 3. Fixed an incorrect vector reference in the orientation matrix calculation, which previously led to scaling along the incorrect axis (most noticeable with acute angles in the extrusion path).
