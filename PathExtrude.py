@@ -1,4 +1,4 @@
-# Polygon Path Extrusion Tool - Version 2.0
+# Polygon Path Extrusion Tool - Version 3.0
 
 bl_info = {'name':'Path Extrude','category':'Object','blender':(2,80,0)}
 
