@@ -142,7 +142,10 @@ class PathExtrude(bpy.types.Operator):
                                        (orient_vectorx[1],orient_vectory[1],orient_vectorz[1]),
                                        (orient_vectorx[2],orient_vectory[2],orient_vectorz[2])))
                 cos = np.dot(average_list[i-1],average_list[i])
-                bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
+                if bpy.app.version[0] == 2 and bpy.app.version[1] >=90:
+                    bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
+                else:
+                    bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
                 bpy.ops.transform.resize(value=(1/factor_list[i-1],1,1), orient_matrix=orientMatrix)
                 bpy.ops.transform.resize(value=(factor_list[i],1,1), orient_matrix=orientMatrix)
      
