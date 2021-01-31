@@ -62,12 +62,12 @@ class PathExtrude(bpy.types.Operator):
         for curve in bpy.context.selected_objects:
             if curve == extrusion_path:
                 curve.select_set(state=False)
-		
+
         for curve in bpy.context.selected_objects:
             if curve != extrusion_path:
                 # The first selected curve (not the active object) is the extruded curve
                 extruded_curve = curve
-                
+
                 # Make curve active
                 bpy.context.view_layer.objects.active = curve
 
@@ -79,7 +79,7 @@ class PathExtrude(bpy.types.Operator):
                     bpy.ops.mesh.delete(type = 'ONLY_FACE')
                     bpy.ops.mesh.select_mode(type = 'VERT')
                     bpy.ops.object.mode_set(mode = 'OBJECT')
-		
+
                 # Move the extruded curve center to the first vertex of the extrusion path
                 extruded_curve.location.x = vertex_list[0][0]
                 extruded_curve.location.y = vertex_list[0][1]
