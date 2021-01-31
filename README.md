@@ -75,3 +75,5 @@ For each step in the extrusion process, the scaling applied is the ratio of the 
 
 ### Version 3.1 Updates
 1. Limit orientation matrix correction to Blender 2.90, since the issues were resolved in Blender 2.91
+2. For meshes extruded along closed paths, removed faces prior to extrusion, in order to prevent creation of interior faces in the final object.
+3. Corrected indexing error that occurred when negative eigenvalues were encountered.
