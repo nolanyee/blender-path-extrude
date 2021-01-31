@@ -60,6 +60,10 @@ class PathExtrude(bpy.types.Operator):
         average_list = [vector/np.linalg.norm(vector) for vector in average_list] 
   
         for curve in bpy.context.selected_objects:
+            if curve == extrusion_path:
+                curve.select_set(state=False)
+		
+        for curve in bpy.context.selected_objects:
             if curve != extrusion_path:
                 # The first selected curve (not the active object) is the extruded curve
                 extruded_curve = curve
@@ -67,6 +71,15 @@ class PathExtrude(bpy.types.Operator):
                 # Make curve active
                 bpy.context.view_layer.objects.active = curve
 
+                # Delete faces in extruded mesh if the path is closed
+                if path_closed:
+                    bpy.ops.object.mode_set(mode='EDIT')
+                    bpy.ops.mesh.select_mode(type = 'FACE')
+                    bpy.ops.mesh.dissolve_faces()
+                    bpy.ops.mesh.delete(type = 'ONLY_FACE')
+                    bpy.ops.mesh.select_mode(type = 'VERT')
+                    bpy.ops.object.mode_set(mode = 'OBJECT')
+		
                 # Move the extruded curve center to the first vertex of the extrusion path
                 extruded_curve.location.x = vertex_list[0][0]
                 extruded_curve.location.y = vertex_list[0][1]
@@ -79,7 +92,7 @@ class PathExtrude(bpy.types.Operator):
                 # Calculate the normal vector of the best fit plane for the vertices
                 centered_vertices = extruded_curve_vertices - np.average(extruded_curve_vertices, axis=0)
                 eigenvalues, eigenvectors = np.linalg.eig(np.dot(centered_vertices.T, centered_vertices))
-                initial_normal = eigenvectors[:,list(eigenvalues).index(min(abs(eigenvalues)))]
+                initial_normal = eigenvectors[:,list(abs(eigenvalues)).index(min(abs(eigenvalues)))]
                 if np.dot(initial_normal, average_list[1]) < 0:
                     initial_normal = -1*initial_normal
 
@@ -104,8 +117,6 @@ class PathExtrude(bpy.types.Operator):
                     bpy.ops.transform.resize(value=(factor0,1,1), orient_matrix=orientMatrix)
 
                 new_extruded_curve_vertices = [(bpy.context.view_layer.objects.active.matrix_world@r.co).to_tuple() for r in bpy.context.view_layer.objects.active.data.vertices]
-            else:
-                curve.select_set(state=False)
 
 
         if path_closed:
