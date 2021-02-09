@@ -1,4 +1,4 @@
-# Polygon Path Extrusion Tool - Version 3.1
+# Polygon Path Extrusion Tool - Version 3.2
 
 bl_info = {'name':'Path Extrude','category':'Object','blender':(2,80,0)}
 
@@ -23,8 +23,78 @@ class PathExtrude(bpy.types.Operator):
         # Define the extrusion path as the most recently selected object
         extrusion_path = bpy.context.active_object
 
+        # Detect if the extrusion path is closed
+        path_closed = len(extrusion_path.data.edges) == len(extrusion_path.data.vertices)
+
+        # Order Vertices
+        path_vertex_list = extrusion_path.data.vertices
+        path_edge_list = [(Edge.vertices[0],Edge.vertices[1]) for Edge in extrusion_path.data.edges]
+
+        def getOtherIndex(edgeTuple, vertexIndex):
+            if vertexIndex in edgeTuple:
+                if edgeTuple[0] == vertexIndex:
+                    return edgeTuple[1]
+                else:
+                    return edgeTuple[0]
+
+        def findAdjacentVertices(edgeList, vertexIndex):
+            return [getOtherIndex(edgeTuple, vertexIndex) for edgeTuple in edgeList if vertexIndex in edgeTuple ]
+
+        def findNextVertex(edgeList, vertexIndex, lastVertex):
+            return [getOtherIndex(edgeTuple, vertexIndex) for edgeTuple in edgeList if vertexIndex in edgeTuple and lastVertex not in edgeTuple ]    
+
+        cleanPath = True
+        edgeDict = dict()
+        for i in range(len(path_vertex_list)):
+            edgeDict[i]=0
+        for edgeTuple in path_edge_list:
+            edgeDict[edgeTuple[0]] +=1
+            edgeDict[edgeTuple[1]] +=1
+        for i in range(len(path_vertex_list)):
+            if edgeDict[i] > 2:
+                cleanPath = False
+                break
+
+        if cleanPath:
+            pathOrigins = findAdjacentVertices(path_edge_list, 0)
+            pathLists = []
+            finalOrder = []
+            indicesPassed = []
+
+            for i in range(len(pathOrigins)):
+                pathList = [pathOrigins[i]]
+                previousVertex = 0
+                indicesPassed.append(previousVertex)
+                currentVertex = pathOrigins[i]
+                nextVertex = findNextVertex(path_edge_list, currentVertex, previousVertex)
+                while len(nextVertex) >0:
+                    if nextVertex[0] not in indicesPassed:
+                        pathList.append(nextVertex[0])
+                        previousVertex = currentVertex
+                        indicesPassed.append(previousVertex)
+                        currentVertex = nextVertex[0]
+                        nextVertex = findNextVertex(path_edge_list, currentVertex, previousVertex)
+                    else:
+                        break
+                pathLists.append(pathList)
+
+            if not path_closed:
+                if len(pathLists) == 1:
+                    finalOrder = [0] + pathLists[0]
+                elif len(pathLists) == 2:
+                    if len(pathLists[0]) > len(pathLists[1]):
+                        pathLists[1].reverse()
+                        finalOrder = pathLists[1] + [0] + pathLists[0]
+                    else:
+                        pathLists[0].reverse()
+                        finalOrder = pathLists[0] + [0] + pathLists[1]
+            else:
+                finalOrder = [0] + pathLists[0]
+
+            path_vertex_list = [extrusion_path.data.vertices[a] for a in finalOrder]
+
         # Tabulate extrusion path vertices
-        vertex_list = [np.array((extrusion_path.matrix_world@r.co).to_tuple()) for r in extrusion_path.data.vertices]
+        vertex_list = [np.array((extrusion_path.matrix_world@r.co).to_tuple()) for r in path_vertex_list]
 
 	# Detect if the extrusion path is closed
         path_closed = len(extrusion_path.data.edges) == len(vertex_list)
@@ -112,7 +182,10 @@ class PathExtrude(bpy.types.Operator):
                     average_list[0] = initial_normal
                 else:
                     cos = np.dot(initial_normal,average_list[0])
-                    bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
+                    if bpy.app.version[0] == 2 and bpy.app.version[1] == 90:
+                        bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
+                    else:
+                        bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
                     factor0 = abs(1/np.dot(average_list[0],normalized_differences[1]))
                     bpy.ops.transform.resize(value=(factor0,1,1), orient_matrix=orientMatrix)
 
