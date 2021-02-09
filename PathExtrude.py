@@ -96,9 +96,6 @@ class PathExtrude(bpy.types.Operator):
         # Tabulate extrusion path vertices
         vertex_list = [np.array((extrusion_path.matrix_world@r.co).to_tuple()) for r in path_vertex_list]
 
-	# Detect if the extrusion path is closed
-        path_closed = len(extrusion_path.data.edges) == len(vertex_list)
-
 	# Double the first vertex if closed
         if path_closed:
             vertex_list.append(vertex_list[0])
