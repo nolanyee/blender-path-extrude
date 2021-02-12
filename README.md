@@ -1,4 +1,4 @@
-# Path Extrusion Tool for Blender (Version 3.2)
+# Path Extrusion Tool for Blender (Version 3.3)
 ### Overview
 To use this tool, select one polygon curve and another polygon path. The selected curve is extruded along the polygon path. This is achieved by extruding the loop towards each point on the path. The pivot of the curve is translated to the points on the path. The orientation is such that the normal vector of the best-fit plane of the curve is parallel to the path at all points on the path except the first point, for which the original orientation of the curve is used. When the path takes sharp turns, mitering is accomplished by scaling the loop in a manner dependent on the angle of the path.
 
@@ -81,3 +81,7 @@ For each step in the extrusion process, the scaling applied is the ratio of the 
 ### Version 3.2 Updates
 1. Fixed rotation behavior for curved paths in Blender 2.90
 2. Added the ability to use extrusion paths whose vertices are not in order.
+
+### Version 3.3 Updates
+1. Duplicate vertex removal in the extrusion path now only occurs if the vertices are adjacent in the path
+2. Added handling for division by 0 errors
