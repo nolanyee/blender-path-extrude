@@ -1,4 +1,4 @@
-# Polygon Path Extrusion Tool - Version 3.2
+# Polygon Path Extrusion Tool - Version 3.3
 
 bl_info = {'name':'Path Extrude','category':'Object','blender':(2,80,0)}
 
@@ -13,11 +13,6 @@ class PathExtrude(bpy.types.Operator):
     bl_options = {'REGISTER','UNDO'}
 
     def execute(self, context):
-        # Remove duplicate vertices
-        bpy.ops.object.mode_set(mode='EDIT')
-        bpy.ops.mesh.select_mode(type = 'VERT')
-        bpy.ops.mesh.select_all(action='SELECT')
-        bpy.ops.mesh.remove_doubles()
         bpy.ops.object.mode_set(mode='OBJECT')
 
         # Define the extrusion path as the most recently selected object
@@ -96,6 +91,15 @@ class PathExtrude(bpy.types.Operator):
         # Tabulate extrusion path vertices
         vertex_list = [np.array((extrusion_path.matrix_world@r.co).to_tuple()) for r in path_vertex_list]
 
+        # Remove duplicate vertices only if adjacent in the extrusion order
+        clean_vertex_list = []
+        last_vertex = (np.NaN, np.NaN, np.NaN)
+        for vertexTuple in vertex_list:
+            if not np.all(np.isclose(np.array(last_vertex), np.array(vertexTuple))):
+                clean_vertex_list.append(vertexTuple)
+            last_vertex = vertexTuple
+        vertex_list = clean_vertex_list 
+
 	# Double the first vertex if closed
         if path_closed:
             vertex_list.append(vertex_list[0])
@@ -165,29 +169,37 @@ class PathExtrude(bpy.types.Operator):
 
                 # Scaling and rotation of extruded curve, keeping orientation for open path
                 extrusion_path.select_set(state=False)
-                orient_vectorz = np.cross(initial_normal, average_list[0])
-                orient_vectorz /= np.linalg.norm(orient_vectorz)
-                orient_vectory = average_list[0]
-                orient_vectorx = np.cross(orient_vectorz, orient_vectory)
-                orient_vectorx /= np.linalg.norm(orient_vectorx)
-                orientMatrix = Matrix(((orient_vectorx[0],orient_vectory[0],orient_vectorz[0]),
-                                       (orient_vectorx[1],orient_vectory[1],orient_vectorz[1]),
-                                       (orient_vectorx[2],orient_vectory[2],orient_vectorz[2])))
-                if not path_closed:
-                    factor0 = abs(1/np.dot(average_list[0],initial_normal))
-                    bpy.ops.transform.resize(value=(factor0,1,1), orient_matrix=orientMatrix)
-                    average_list[0] = initial_normal
-                else:
-                    cos = np.dot(initial_normal,average_list[0])
-                    if bpy.app.version[0] == 2 and bpy.app.version[1] == 90:
-                        bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
+                if abs(np.dot(average_list[0],initial_normal)) != 1:
+                    orient_vectorz = np.cross(initial_normal, average_list[0])
+                    orient_vectorz /= np.linalg.norm(orient_vectorz)
+                    orient_vectory = average_list[0]
+                    orient_vectorx = np.cross(orient_vectorz, orient_vectory)
+                    orient_vectorx /= np.linalg.norm(orient_vectorx)
+                    orientMatrix = Matrix(((orient_vectorx[0],orient_vectory[0],orient_vectorz[0]),
+                                           (orient_vectorx[1],orient_vectory[1],orient_vectorz[1]),
+                                           (orient_vectorx[2],orient_vectory[2],orient_vectorz[2])))
+                    if not path_closed:
+                        if np.dot(average_list[0],initial_normal) != 0:
+                            factor0 = abs(1/np.dot(average_list[0],initial_normal))
+                        else:
+                            factor0 = 1
+                        bpy.ops.transform.resize(value=(factor0,1,1), orient_matrix=orientMatrix)
+                        average_list[0] = initial_normal
                     else:
-                        bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
-                    factor0 = abs(1/np.dot(average_list[0],normalized_differences[1]))
-                    bpy.ops.transform.resize(value=(factor0,1,1), orient_matrix=orientMatrix)
-
+                        cos = np.dot(initial_normal,average_list[0])
+                        if bpy.app.version[0] == 2 and bpy.app.version[1] == 90:
+                            bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
+                        else:
+                            bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
+                        if np.dot(average_list[0],normalized_differences[1]) != 0:
+                            factor0 = abs(1/np.dot(average_list[0],normalized_differences[1]))
+			else:
+                            factor0 = 1
+                        bpy.ops.transform.resize(value=(factor0,1,1), orient_matrix=orientMatrix)
+                else:
+                    factor0 = 1
+                    bpy.ops.transform.translate(value=(0,0,0))
                 new_extruded_curve_vertices = [(bpy.context.view_layer.objects.active.matrix_world@r.co).to_tuple() for r in bpy.context.view_layer.objects.active.data.vertices]
-
 
         if path_closed:
             normalized_differences[0] = (normalized_differences[1]+normalized_differences[-1])/np.linalg.norm(normalized_differences[1]+normalized_differences[-1])
@@ -214,24 +226,24 @@ class PathExtrude(bpy.types.Operator):
             if not path_closed or i !=len(vertex_list)-1:
                 bpy.ops.mesh.extrude_region_move()
                 bpy.ops.transform.translate(value=difference_list[i])
-                orient_vectorz = np.cross(average_list[i-1],average_list[i])
-                orient_vectorz /= np.linalg.norm(orient_vectorz)
-                orient_vectory = average_list[i]
-                orient_vectorx = np.cross(orient_vectorz, orient_vectory)
-                orient_vectorx /= np.linalg.norm(orient_vectorx)
-                orientMatrix = Matrix(((orient_vectorx[0],orient_vectory[0],orient_vectorz[0]),
-                                       (orient_vectorx[1],orient_vectory[1],orient_vectorz[1]),
-                                       (orient_vectorx[2],orient_vectory[2],orient_vectorz[2])))
                 cos = np.dot(average_list[i-1],average_list[i])
-                if bpy.app.version[0] == 2 and bpy.app.version[1] == 90:
-                    bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
-                else:
-                    bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
-                bpy.ops.transform.resize(value=(1/factor_list[i-1],1,1), orient_matrix=orientMatrix)
-                bpy.ops.transform.resize(value=(factor_list[i],1,1), orient_matrix=orientMatrix)
-     
+                if abs(cos) != 1:
+                    orient_vectorz = np.cross(average_list[i-1],average_list[i])
+                    orient_vectorz /= np.linalg.norm(orient_vectorz)
+                    orient_vectory = average_list[i]
+                    orient_vectorx = np.cross(orient_vectorz, orient_vectory)
+                    orient_vectorx /= np.linalg.norm(orient_vectorx)
+                    orientMatrix = Matrix(((orient_vectorx[0],orient_vectory[0],orient_vectorz[0]),
+                                           (orient_vectorx[1],orient_vectory[1],orient_vectorz[1]),
+                                           (orient_vectorx[2],orient_vectory[2],orient_vectorz[2])))
+                    if bpy.app.version[0] == 2 and bpy.app.version[1] == 90:
+                        bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
+                    else:
+                        bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
+                    bpy.ops.transform.resize(value=(1/factor_list[i-1],1,1), orient_matrix=orientMatrix)
+                    bpy.ops.transform.resize(value=(factor_list[i],1,1), orient_matrix=orientMatrix)
             else:
-                bpy.ops.object.mode_set(mode = 'OBJECT')  
+                bpy.ops.object.mode_set(mode = 'OBJECT')
                 for Vertex in bpy.context.active_object.data.vertices:
                     if (extruded_curve.matrix_world@Vertex.co).to_tuple() in new_extruded_curve_vertices:
                         Vertex.select = True
