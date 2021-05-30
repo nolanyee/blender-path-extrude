@@ -103,7 +103,7 @@ class PathExtrude(bpy.types.Operator):
 	# Double the first vertex if closed
         if path_closed:
             vertex_list.append(vertex_list[0])
-	
+
         # Calculate difference vectors for translation
         difference_list = []
         for i in range(len(vertex_list)):
@@ -129,7 +129,7 @@ class PathExtrude(bpy.types.Operator):
                 else:
                     average_list.append(normalized_differences[i])
         average_list = [vector/np.linalg.norm(vector) for vector in average_list] 
-  
+
         for curve in bpy.context.selected_objects:
             if curve == extrusion_path:
                 curve.select_set(state=False)
