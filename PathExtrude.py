@@ -211,7 +211,7 @@ class PathExtrude(bpy.types.Operator):
                             bpy.ops.transform.rotate(value= math.acos(cos), orient_axis = 'X')
                             bpy.ops.transform.rotate(value= -1*yRotation, orient_axis = 'Y')
                             bpy.ops.transform.rotate(value= zRotation, orient_axis = 'Z')
-			else:
+                        else:
                             bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=orientMatrix)
                         if np.dot(average_list[0],normalized_differences[1]) != 0:
                             factor0 = abs(1/np.dot(average_list[0],normalized_differences[1]))
