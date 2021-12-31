@@ -1,4 +1,4 @@
-# Polygon Path Extrusion Tool - Version 3.4
+# Polygon Path Extrusion Tool - Version 3.5
 
 bl_info = {'name':'Path Extrude','category':'Object','blender':(2,80,0)}
 
@@ -187,7 +187,7 @@ class PathExtrude(bpy.types.Operator):
                         average_list[0] = initial_normal
                     else:
                         cos = np.dot(initial_normal,average_list[0])
-                        if bpy.app.version[0] == 2 and bpy.app.version[1] == 90:
+                        if (bpy.app.version[0] == 2 and bpy.app.version[1] == 90) or bpy.app.version[0] > 2 :
                             bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
                         elif bpy.app.version[0] == 2 and bpy.app.version[1] == 92:
                             if -1*orient_vectorz[0] > 0:
@@ -258,7 +258,7 @@ class PathExtrude(bpy.types.Operator):
                     orientMatrix = Matrix(((orient_vectorx[0],orient_vectory[0],orient_vectorz[0]),
                                            (orient_vectorx[1],orient_vectory[1],orient_vectorz[1]),
                                            (orient_vectorx[2],orient_vectory[2],orient_vectorz[2])))
-                    if bpy.app.version[0] == 2 and bpy.app.version[1] == 90:
+                    if (bpy.app.version[0] == 2 and bpy.app.version[1] == 90) or bpy.app.version[0] > 2:
                         bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
                     elif bpy.app.version[0] == 2 and bpy.app.version[1] == 92:
                         if -1*orient_vectorz[0] > 0:
