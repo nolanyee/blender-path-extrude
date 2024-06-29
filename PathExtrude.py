@@ -1,4 +1,4 @@
-# Polygon Path Extrusion Tool - Version 3.5
+# Polygon Path Extrusion Tool - Version 3.6
 
 bl_info = {'name':'Path Extrude','category':'Object','blender':(2,80,0)}
 
@@ -186,8 +186,8 @@ class PathExtrude(bpy.types.Operator):
                         bpy.ops.transform.resize(value=(factor0,1,1), orient_matrix=orientMatrix)
                         average_list[0] = initial_normal
                     else:
-                        cos = np.dot(initial_normal,average_list[0])
-                        if (bpy.app.version[0] == 2 and bpy.app.version[1] == 90) or bpy.app.version[0] > 2 :
+                        cos = min(max(np.dot(initial_normal,average_list[0]),-1),1)
+                        if (bpy.app.version[0] == 2 and bpy.app.version[1] == 90) or bpy.app.version[0] > 2:
                             bpy.ops.transform.rotate(value=math.acos(cos), orient_matrix=-1*orientMatrix)
                         elif bpy.app.version[0] == 2 and bpy.app.version[1] == 92:
                             if -1*orient_vectorz[0] > 0:
@@ -233,7 +233,7 @@ class PathExtrude(bpy.types.Operator):
             if i == 0:
                 factor_list.append(factor0)
             elif i != len(normalized_differences)-1:
-                factor_list.append(1/math.sin(math.acos(np.dot(-1*normalized_differences[i],normalized_differences[i+1]))/2))
+                factor_list.append(1/math.sin(math.acos(min(max(np.dot(-1*normalized_differences[i],normalized_differences[i+1]),-1),1))/2))
             else:
                 if path_closed:
                     factor_list.append(factor0)
@@ -248,7 +248,7 @@ class PathExtrude(bpy.types.Operator):
             if not path_closed or i !=len(vertex_list)-1:
                 bpy.ops.mesh.extrude_region_move()
                 bpy.ops.transform.translate(value=difference_list[i])
-                cos = np.dot(average_list[i-1],average_list[i])
+                cos = min(max(np.dot(average_list[i-1],average_list[i]),-1),1)
                 if abs(cos) != 1:
                     orient_vectorz = np.cross(average_list[i-1],average_list[i])
                     orient_vectorz /= np.linalg.norm(orient_vectorz)
@@ -311,3 +311,4 @@ def unregister():
 
 if __name__ == '__main__':
     register()
+
